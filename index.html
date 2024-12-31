@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautiful New Year Card with Quiz</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: black;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        .fireworks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, white, rgba(255, 255, 255, 0));
+            border-radius: 50%;
+            animation: explode 1s ease-out infinite;
+        }
+
+        .card-container {
+    position: relative;
+    width: 320px;
+    height: 420px;
+    perspective: 1200px;
+    z-index: 1;
+    display: flex; /* Added flex to center the card container */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transform-style: preserve-3d;
+    transform: rotateY(0deg);
+    transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    display: flex; /* Added flex to center the content inside the card */
+    justify-content: center; /* Center horizontally inside the card */
+    align-items: center; /* Center vertically inside the card */
+}
+
+.page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center; /* Center horizontally inside the page */
+    align-items: center; /* Center vertically inside the page */
+    font-size: 1.5em;
+    color: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+}
+        .page-1 {
+            background: linear-gradient(135deg, #f9d423, #ff4e50);
+        }
+
+        .page-2 {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            transform: rotateY(90deg);
+        }
+
+        .page-3 {
+            background: linear-gradient(135deg, #42e695, #3bb2b8);
+            transform: rotateY(180deg);
+        }
+
+        .page-4 {
+            background: linear-gradient(135deg, #ff9966, #ff5e62);
+            transform: rotateY(-90deg);
+        }
+
+        .page-content {
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.5;
+            font-size: 1.2em;
+        }
+
+        .page-content span {
+            display: block;
+            font-size: 2.0em;
+            margin-top: 10px;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            z-index: 2;
+        }
+
+        .controls button {
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ff8a00, #da1b60);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .controls button:hover {
+            background: linear-gradient(135deg, #da1b60, #ff8a00);
+            box-shadow: 0px 8px 15px rgba(255, 136, 0, 0.6);
+            transform: scale(1.05);
+        }
+
+        .controls button:active {
+            transform: scale(0.95);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .quiz-container {
+            text-align: center;
+            font-size: 18px;
+            color: white;
+            display: none;
+        }
+
+        .quiz-question {
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+
+        .quiz-option {
+            background-color: #ff7f50;
+            margin: 10px 0;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .quiz-option:hover {
+            background-color: #ff6347;
+        }
+
+        .quiz-result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        .character-image {
+            position: absolute;
+            right: -80px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 250px;
+            height: auto;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+            z-index: 2;
+        }
+
+        .character-image:hover {
+            transform: scale(1.2);
+        }
+
+        .let-play {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #fff;
+            animation: fadeInOut 3s forwards;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .friend-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .friend-image {
+            width: 200px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 15px;
+        }
+
+        .friend-note {
+            font-size: 0.4em;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.4);
+        }
+        .page-1 {
+    background: linear-gradient(135deg, #f9d423, #ff4e50);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding: 20px;
+}
+
+.newyear-text {
+    text-align: center;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 10%;  /* Positioned at the top */
+}
+
+.happy-newyear {
+    font-family: 'Brush Script MT', cursive;
+    font-size: 2.5em;  /* Adjusted font size */
+    color: #fff;
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 0, 0, 0.7), 0 0 50px rgba(255, 0, 0, 0.7);
+    animation: glitter 2s ease-in-out infinite;
+}
+
+.image-container {
+    text-align: center;
+    width: 100%;
+    margin-top: auto; /* Push the image to the bottom */
+}
+
+.newyear-image {
+    width: 100%;
+    height: auto;
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes glitter {
+    0% {
+        text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 255, 255, 0.8), 0 0 50px rgba(255, 255, 255, 0.8);
+    }
+    50% {
+        text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 0, 0, 0.7), 0 0 50px rgba(255, 0, 0, 0.7);
+    }
+    100% {
+        text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 255, 255, 0.8), 0 0 50px rgba(255, 255, 255, 0.8);
+    }
+}
+.page-4 {
+    background: linear-gradient(135deg, #ff9966, #ff5e62);
+    transform: rotateY(-90deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+}
+
+.message-container {
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    padding: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+}
+
+.message-container h2 {
+    font-size: 1em;
+    margin-bottom: 1px;
+    color: #fff;
+    text-shadow: 0px 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+.message-box {
+    width: 8
+    0%;
+    height: 100px;
+    padding: 10px;
+    font-size: 1em;
+    border: none;
+    border-radius: 10px;
+    resize: none;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+    outline: none;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+.submit-btn {
+    margin-top: 20px;
+    padding: 5px 10px;
+    font-size: 0.5em;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #42e695, #3bb2b8);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(135deg, #3bb2b8, #42e695);
+    transform: scale(1.1);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.note {
+    margin-top: 15px;
+    font-size: 0.4em;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+}
+
+.countdown {
+    font-size: 1em;
+    font-weight: bold;
+    text-shadow: 0px 3px 6px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="fireworks" id="fireworks"></div>
+    <div class="card-container">
+        <div id="card" class="card">
+            <div class="page page-1">
+                <div class="page-content">
+                    <div class="image-container">
+                        <img src="WhatsApp Image 2024-12-31 at 15.22.19_3170c77b.jpg" alt="New Year" class="newyear-image">
+                    </div>
+                    <div class="newyear-text">
+                        <h1 class="happy-newyear">Happy New Year 2025 💫</h1>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="page page-2">
+                <div class="page-content">
+                    <div class="let-play" id="letPlayText">Let's Play!</div>
+                    <div class="quiz-container" id="quiz-container" style="display: none;">
+                        <div class="quiz-question" id="question"></div>
+                        <div class="quiz-option" id="option1" onclick="checkAnswer(1)"></div>
+                        <div class="quiz-option" id="option2" onclick="checkAnswer(2)"></div>
+                        <div class="quiz-option" id="option3" onclick="checkAnswer(3)"></div>
+                        <div class="quiz-option" id="option4" onclick="checkAnswer(4)"></div>
+                        <div class="quiz-result" id="quiz-result"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="page page-3">
+                <div class="page-content">
+                    <div class="friend-section">
+                        <img src="page3.jpg" alt="Your Friend" class="friend-image">
+                        <div class="friend-note">
+                            <p>The Best Picture Award winner ....
+                                Aur Bhi hai par abhi khojne ka mnn nhi ....🤣
+
+                                Aisehi khush rehna ....😊
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="page page-4">
+                <!-- Countdown Timer -->
+                <div id="countdown" class="countdown"></div>
+
+                <div class="page-content">
+                    <div class="message-container">
+                        <h2>Leave Your Message</h2>
+                        <textarea id="messageBox" class="message-box" placeholder="Write your message here..."></textarea>
+                        <button class="submit-btn" onclick="submitMessage()">Submit</button>
+                    </div>
+                    <div class="note">Note: Since the database is not linked, take a screenshot!</div>
+                </div>
+            </div>
+        </div>
+        <div class="controls">
+            <button id="prev">← Previous</button>
+            <button id="next">Next →</button>
+        </div>
+    </div>
+        </div>
+        <div class="controls">
+            <button id="prev">← Previous</button>
+            <button id="next">Next →</button>
+        </div>
+    </div>
+    <script>
+        const card = document.getElementById('card');
+        const nextButton = document.getElementById('next');
+        const prevButton = document.getElementById('prev');
+        const letPlayText = document.getElementById('letPlayText');
+        const quizContainer = document.getElementById('quiz-container');
+        let currentPage = 0;
+
+        function updateCard() {
+            const angle = currentPage * -90;
+            card.style.transform = `rotateY(${angle}deg)`;
+        }
+
+        nextButton.addEventListener('click', () => {
+            if (currentPage < 3) currentPage++;
+            updateCard();
+            if (currentPage === 1) {
+                letPlayText.style.display = 'block';
+                setTimeout(() => {
+                    letPlayText.style.display = 'none';
+                    quizContainer.style.display = 'block';
+                    loadQuestion();
+                }, 3000); // Show "Let's Play" for 3 seconds before starting the quiz
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentPage > 0) currentPage--;
+            updateCard();
+        });
+
+        // Quiz game logic
+        const questions = [
+            {
+                question: "Mai kaisa ladka hu ?",
+                options: ["handsome😎", "smart😉", "jo tum bolti ho😒", "all of the above"],
+                correct: 4
+            },
+            {
+                question: "What is my email?🤣",
+                options: ["pathaksatyam233@gmail.com", "pathaksatyam366@gmail.com", "pathaksatyam633@gmail.com", "pathaksatyam322@gmail.com"],
+                correct: 3
+            },
+            {
+                question: "my favorite color :",
+                options: ["Red", "Blue😊", "green😁", "NONE"],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question').innerText = question.question;
+            document.getElementById('option1').innerText = question.options[0];
+            document.getElementById('option2').innerText = question.options[1];
+            document.getElementById('option3').innerText = question.options[2];
+            document.getElementById('option4').innerText = question.options[3];
+        }
+
+        function checkAnswer(option) {
+            const question = questions[currentQuestion];
+            if (option === question.correct) {
+                score++;
+            }
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                document.getElementById('quiz-result').innerText = `Your Score: ${score}/${questions.length}`;
+            }
+        }
+         // Countdown Timer
+         const countdownElement = document.getElementById('countdown');
+        const countdownDate = new Date("Jan 1, 2025 00:00:00").getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+            if (distance < 0) {
+                countdownElement.innerHTML = "EXPIRED";
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+
+        // Submit Message Function
+        function submitMessage() {
+            const messageBox = document.getElementById('messageBox');
+            const message = messageBox.value;
+            if (message.trim() !== "") {
+                alert(`Your Message: ${message}`);
+                messageBox.value = ""; // Clear the message box
+            } else {
+                alert("Please write something before submitting!");
+            }
+        }
+        // Fireworks effect
+// Fireworks effect
+const fireworksContainer = document.getElementById('fireworks'); // Reference the correct container
+
+function createFirework() {
+    const firework = document.createElement('div');
+    firework.className = 'firework';
+
+    // Randomize the position of the fireworks
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight;
+    firework.style.left = `${x}px`;
+    firework.style.top = `${y}px`;
+
+    // Randomize the animation duration
+    firework.style.animationDuration = `${Math.random() * 0.5 + 0.8}s`;
+
+    // Append the firework to the container
+    fireworksContainer.appendChild(firework);
+
+    // Remove the firework after the animation completes
+    setTimeout(() => {
+        firework.remove();
+    }, 1000);
+}
+
+// Create a firework every 200ms
+setInterval(createFirework, 200);
+
+    </script>
+</body>
+</html>
